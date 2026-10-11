@@ -1,0 +1,31 @@
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 10px 20px; border: 1px solid transparent; border-radius: 100px; font-size: .875rem; font-weight: 600; text-align: center; transition: background-color 120ms; flex-shrink: 0; }
+.button-primary { background: var(--primary); color: var(--primary-text); }
+.button-primary:hover { filter: brightness(1.07); }
+.button-outline { border-color: var(--input-border); background: var(--surface); color: var(--foreground); }
+.button-outline:hover, .button-ghost:hover { background: var(--soft); }
+.button-ghost { color: var(--foreground); background: transparent; }
+.button-danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+.button-icon { width: 44px; height: 44px; padding: 0; }
+.button:active { filter: brightness(.94); }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-size: .875rem; font-weight: 500; }
+input, select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--surface); color: var(--foreground); padding: 10px 12px; }
+input::placeholder { color: var(--muted); opacity: 1; }
+input[type="file"] { padding: 8px; font-size: .875rem; }
+input[type="checkbox"] { width: 20px; min-height: 20px; accent-color: var(--primary); }
+.checkbox-field { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.form-stack { display: grid; gap: 20px; }
+.form-row { display: grid; gap: 16px; }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+.error-message { color: var(--danger); background: var(--danger-bg); border-radius: 8px; padding: 12px; font-size: .875rem; overflow-wrap: anywhere; }
+.dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 40; }
+.dialog-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 50; background: var(--surface); color: var(--foreground); border: 1px solid var(--border); border-radius: 16px; padding: 24px; width: min(560px,calc(100% - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; }
+.dialog-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.dialog-heading h2 { font-size: 1.25rem; }
+.dialog-heading p { font-size: .875rem; color: var(--muted); margin-top: 6px; overflow-wrap: anywhere; }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 100px; font-size: .75rem; font-weight: 500; background: var(--soft); color: var(--link); overflow-wrap: anywhere; }
+.badge-neutral { background: var(--background); color: var(--muted); border: 1px solid var(--border); }
+.data-state { display: grid; justify-items: center; gap: 16px; padding: 64px 16px; text-align: center; color: var(--muted); }
+.data-state h2 { color: var(--foreground); }
+.data-state .button { margin-top: 8px; }
+@media (min-width: 500px) { .form-row { grid-template-columns: 1fr 1fr; } }

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3f75ff">
+  <title>Offline | Goals Management</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100dvh; display: grid; place-items: center; padding: 24px; font-family: sans-serif; background: #f9fafb; color: #1a1a1a; }
+    main { max-width: 400px; text-align: center; }
+    img { border-radius: 16px; }
+    h1 { font-size: 24px; line-height: 1.4; }
+    p { line-height: 1.6; }
+    button { min-height: 44px; padding: 12px 24px; border: 1px solid #26408c; border-radius: 100px; background: #3f75ff; color: #05050a; font-size: 16px; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #26408c; outline-offset: 4px; }
+    @media (prefers-color-scheme: dark) { body { background: #06040d; color: #fff; } button:focus-visible { outline-color: #b9ceff; } }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="/icons/icon-192.png" alt="Goals Management" width="80" height="80">
+    <h1>Anda sedang offline</h1>
+    <p>Sambungkan kembali ke internet untuk membuka daftar barang. Data Anda tidak berubah.</p>
+    <button type="button" onclick="location.reload()">Coba lagi</button>
+  </main>
+</body>
+</html>

@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL,
+  role TEXT NOT NULL CHECK(role IN ('ADMIN', 'DEVELOPER')),
+  session_version INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS categories (id TEXT PRIMARY KEY, name TEXT NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY, title TEXT NOT NULL,
+  status TEXT NOT NULL CHECK(status IN ('WISHLIST', 'SUDAH_DIBELI', 'SERING_DIBELI')),
+  buy_url TEXT NOT NULL, affiliate_url TEXT, image_url TEXT,
+  category_id TEXT NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
+  created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS products_category_idx ON products(category_id);
+CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS login_attempts (email TEXT PRIMARY KEY, attempts INTEGER NOT NULL, expires INTEGER NOT NULL);
+PRAGMA user_version = 1;
