@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Save } from "lucide-react";
+import { DisketteIcon } from "@solar-icons/react/linear";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -26,7 +26,7 @@ export function UserForm({ item, currentId, onClose, onSaved }) {
       <Field name="role" label="Role"><select id="role" name="role" defaultValue={item?.role || "ADMIN"} disabled={item?.id === currentId}><option value="ADMIN">Admin</option><option value="DEVELOPER">Developer</option></select></Field>
       <Field name="password" label={item ? "Password baru (opsional)" : "Password"} type="password" autoComplete="new-password" required={!item} minLength={12} maxLength={128} hint={item ? "Kosongkan untuk mempertahankan password. Minimal 12 karakter jika diubah." : "Minimal 12 karakter."} />
       <ErrorMessage message={error} />
-      <div className="form-actions"><Button variant="outline" onClick={onClose} disabled={busy}>Batal</Button><Button type="submit" disabled={busy}><Save size={18} />{busy ? "Menyimpan..." : "Simpan pengguna"}</Button></div>
+      <div className="form-actions"><Button variant="outline" onClick={onClose} disabled={busy}>Batal</Button><Button type="submit" disabled={busy}><DisketteIcon size={18} />{busy ? "Menyimpan..." : "Simpan pengguna"}</Button></div>
     </form>
   </Dialog>;
 }

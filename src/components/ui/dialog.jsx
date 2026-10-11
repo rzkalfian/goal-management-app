@@ -1,6 +1,6 @@
 "use client";
 import * as Primitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
+import { CloseCircleIcon } from "@solar-icons/react/linear";
 import { Button } from "./button";
 
 export function Dialog({ open, onOpenChange, title, description, children }) {
@@ -10,7 +10,7 @@ export function Dialog({ open, onOpenChange, title, description, children }) {
       <Primitive.Content className="dialog-content">
         <div className="dialog-heading">
           <div><Primitive.Title>{title}</Primitive.Title><Primitive.Description>{description}</Primitive.Description></div>
-          <Primitive.Close asChild><Button variant="ghost" size="icon" aria-label="Tutup dialog" title="Tutup dialog"><X size={20} /></Button></Primitive.Close>
+          <Primitive.Close asChild><Button variant="ghost" size="icon" aria-label="Tutup dialog" title="Tutup dialog"><CloseCircleIcon size={20} /></Button></Primitive.Close>
         </div>
         {children}
       </Primitive.Content>

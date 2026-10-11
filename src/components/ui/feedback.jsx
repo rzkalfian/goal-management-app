@@ -1,4 +1,4 @@
-import { RefreshCw } from "lucide-react";
+import { RefreshIcon } from "@solar-icons/react/linear";
 import Link from "next/link";
 import { Button } from "./button";
 export function ErrorMessage({ message }) {
@@ -6,7 +6,7 @@ export function ErrorMessage({ message }) {
 }
 export function DataState({ loading, error, retry, empty, children }) {
   if (loading) return <div className="data-state" role="status">Memuat data...</div>;
-  if (error) return <div className="data-state"><ErrorMessage message={error} /><Button variant="outline" onClick={retry}><RefreshCw size={18} />Coba lagi</Button></div>;
+  if (error) return <div className="data-state"><ErrorMessage message={error} /><Button variant="outline" onClick={retry}><RefreshIcon size={18} />Coba lagi</Button></div>;
   if (empty) return <div className="data-state">{children}</div>;
   return null;
 }

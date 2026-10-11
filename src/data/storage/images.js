@@ -29,7 +29,12 @@ export async function saveImage(file) {
     const response = await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(cloud)}/image/upload`, {
       method: "POST", body: form, signal: AbortSignal.timeout(30_000),
     });
-    if (!response.ok) throw new Error("Penyimpanan Cloudinary gagal.");
+    if (!response.ok) {
+      console.error("Cloudinary upload failed:", response.status);
+      if ([420, 429].includes(response.status)) throw new ValidationError("Kuota penyimpanan gambar habis, gambar belum bisa diunggah. Simpan barang tanpa gambar atau coba lagi nanti.");
+      if ([401, 403].includes(response.status)) throw new ValidationError("Kredensial Cloudinary ditolak. Periksa pengaturan Cloudinary.");
+      throw new Error("Penyimpanan Cloudinary gagal.");
+    }
     const result = await response.json();
     return result.secure_url;
   }

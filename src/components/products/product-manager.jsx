@@ -1,7 +1,7 @@
 "use client";
 import { useDeferredValue, useState } from "react";
 import Link from "next/link";
-import { Plus, RotateCcw } from "lucide-react";
+import { AddCircleIcon, RestartIcon } from "@solar-icons/react/linear";
 import { useResource } from "@/components/hooks/use-resource";
 import { PageHeading } from "@/components/shell/page-heading";
 import { Button } from "@/components/ui/button";
@@ -27,14 +27,14 @@ export function ProductManager() {
   function refresh(message) { products.refresh(); categories.refresh(); setNotice(message); }
   function resetFilters() { setStatus(""); setCategory(""); setQuery(""); }
   return <>
-    <PageHeading title="Daftar barang" subtitle="Wishlist, kebutuhan rutin, dan barang yang sudah Anda beli."><Button onClick={() => setEditor(null)} disabled={loading || !!error || !categories.data.length}><Plus size={18} />Tambah barang</Button></PageHeading>
+    <PageHeading title="Daftar barang" subtitle="Wishlist, kebutuhan rutin, dan barang yang sudah Anda beli."><Button onClick={() => setEditor(null)} disabled={loading || !!error || !categories.data.length}><AddCircleIcon size={18} />Tambah barang</Button></PageHeading>
     <ProductFilters products={products.data} categories={categories.data} {...{ status, setStatus, query, setQuery, category, setCategory }} />
     {notice && <p className="catalog-count" role="status">{notice}</p>}
     {!loading && !error && <p className="catalog-count">{filtered.length} barang ditampilkan</p>}
     <DataState loading={loading} error={error} retry={() => refresh("")} empty={!filtered.length}>
       <h2>{products.data.length ? "Tidak ada barang yang cocok" : "Daftar barang masih kosong"}</h2>
       <p>{products.data.length ? "Ubah pencarian atau filter yang dipilih." : "Tambahkan barang pertama ke wishlist Anda."}</p>
-      {products.data.length ? <Button variant="outline" onClick={resetFilters}><RotateCcw size={18} />Reset filter</Button> : categories.data.length ? <Button onClick={() => setEditor(null)}><Plus size={18} />Tambah barang</Button> : <Button asChild variant="outline"><Link href="/categories">Tambah kategori terlebih dahulu</Link></Button>}
+      {products.data.length ? <Button variant="outline" onClick={resetFilters}><RestartIcon size={18} />Reset filter</Button> : categories.data.length ? <Button onClick={() => setEditor(null)}><AddCircleIcon size={18} />Tambah barang</Button> : <Button asChild variant="outline"><Link href="/categories">Tambah kategori terlebih dahulu</Link></Button>}
     </DataState>
     {!loading && !error && !!filtered.length && <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">{filtered.map((item) => <ProductCard key={item.id} product={item} onEdit={setEditor} onDelete={setDeleting} />)}</div>}
     {editor !== undefined && <ProductForm item={editor} categories={categories.data} onClose={() => setEditor(undefined)} onSaved={() => refresh("Barang berhasil disimpan.")} />}

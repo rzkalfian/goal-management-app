@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Download } from "lucide-react";
+import { DownloadIcon } from "@solar-icons/react/linear";
 import { Button } from "@/components/ui/button";
 import { useInstallPrompt } from "./pwa-register";
 
@@ -15,5 +15,5 @@ export function InstallButton() {
     catch { setError("Instalasi gagal. Coba lagi dari menu browser."); clear(); }
     finally { setBusy(false); }
   }
-  return <Button variant="ghost" size="icon" aria-label="Instal aplikasi" title="Instal aplikasi" onClick={install} disabled={busy}><Download size={20} /></Button>;
+  return <Button variant="ghost" size="icon" aria-label="Instal aplikasi" title="Instal aplikasi" onClick={install} disabled={busy}><DownloadIcon size={20} /></Button>;
 }

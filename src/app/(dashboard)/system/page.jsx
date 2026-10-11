@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Download } from "lucide-react";
+import { DownloadIcon } from "@solar-icons/react/linear";
 import { currentUser } from "@/data/auth/access";
 import { listUsers } from "@/data/repositories/users";
 import { listProducts } from "@/data/repositories/products";
@@ -21,7 +21,7 @@ export default async function System() {
       <div><dt>Isi database</dt><dd>{products.length} barang, {categories.length} kategori, {users.length} pengguna</dd></div>
       <div><dt>Penyimpanan gambar</dt><dd>{cloud ? "Cloudinary" : process.env.NODE_ENV === "production" ? "Cloudinary belum dikonfigurasi" : "Folder lokal (development)"}</dd></div>
     </dl>
-    <Button asChild variant="outline"><a href="/api/backup" download><Download size={18} />Unduh cadangan database</a></Button>
+    <Button asChild variant="outline"><a href="/api/backup" download><DownloadIcon size={18} />Unduh cadangan database</a></Button>
     <p className="backup-note">Cadangan berisi data akun dan hash password. Simpan secara privat. Gambar perlu dicadangkan terpisah.</p>
   </>;
 }

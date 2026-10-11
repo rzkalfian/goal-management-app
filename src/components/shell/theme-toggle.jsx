@@ -1,5 +1,5 @@
 "use client";
-import { Moon, Sun } from "lucide-react";
+import { MoonIcon, SunIcon } from "@solar-icons/react/linear";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
@@ -8,6 +8,6 @@ export function ThemeToggle() {
     try { localStorage.setItem("goals-theme", dark ? "dark" : "light"); } catch {}
   }
   return <Button variant="ghost" size="icon" onClick={toggle} title="Ganti tema" aria-label="Ganti tema">
-    <Moon size={20} className="light-icon" /><Sun size={20} className="dark-icon" />
+    <MoonIcon size={20} className="light-icon" /><SunIcon size={20} className="dark-icon" />
   </Button>;
 }
