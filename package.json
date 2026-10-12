@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "db:migrate": "node --env-file=.env.local scripts/migrate-postgres.mjs",
+    "db:reset-password": "node --env-file-if-exists=.env.local scripts/reset-password.mjs",
     "db:import-sqlite": "node --env-file=.env.local scripts/import-sqlite.mjs",
     "icons": "node scripts/generate-icons.mjs",
     "prebuild": "npm run icons",

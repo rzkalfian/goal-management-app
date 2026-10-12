@@ -1,0 +1,61 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Check Git publishing status",
+			"type": "shell",
+			"command": "git status --short --branch; git remote -v; git log -1 --oneline",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Stage application for GitHub",
+			"type": "shell",
+			"command": "git add -- . ':!.vscode'; if ($LASTEXITCODE -ne 0) { throw 'Staging failed' }; git diff --cached --stat; git diff --cached --name-only; git check-ignore .env.local .data/goals.sqlite node_modules .next",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify staged application files",
+			"type": "shell",
+			"command": "$files = @(git -c core.pager=cat diff --cached --name-only); $blocked = @($files | Where-Object { $_ -match '^(\\.data/|node_modules/|\\.next/|\\.next-e2e/|test-results/|\\.vscode/)' -or ($_ -match '^\\.env' -and $_ -ne '.env.example') }); if ($blocked.Count) { throw 'Private or generated files are staged' }; Write-Output ('Staged files: ' + $files.Count); $files; git check-ignore .env.local .data/goals.sqlite node_modules .next",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Commit and publish application",
+			"type": "shell",
+			"command": "git commit -m \"Add Goals Management application with PWA and PostgreSQL support\"; if ($LASTEXITCODE -ne 0) { throw 'Commit failed' }; git push -u origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Publish Goals application",
+			"type": "shell",
+			"command": "git commit -m 'Add Goals Management application with PWA and PostgreSQL support'; if ($LASTEXITCODE -ne 0) { throw 'Commit failed' }; git push -u origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify GitHub access",
+			"type": "shell",
+			"command": "$env:GIT_TERMINAL_PROMPT='0'; $env:GCM_INTERACTIVE='never'; git -c credential.interactive=false -c http.connectTimeout=15 -c http.lowSpeedLimit=1 -c http.lowSpeedTime=20 ls-remote --heads origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Push application noninteractive",
+			"type": "shell",
+			"command": "$env:GIT_TERMINAL_PROMPT='0'; $env:GCM_INTERACTIVE='never'; git -c credential.interactive=false -c http.connectTimeout=15 -c http.lowSpeedLimit=1 -c http.lowSpeedTime=20 push -u origin main; if ($LASTEXITCODE -ne 0) { throw 'GitHub push failed; authenticate directly with GitHub and retry' }; git -c core.pager=cat status --short --branch",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Confirm published commit",
+			"type": "shell",
+			"command": "$env:GIT_TERMINAL_PROMPT='0'; $env:GCM_INTERACTIVE='never'; $local = git rev-parse HEAD; $remote = git -c credential.interactive=false ls-remote --heads origin main; if ($LASTEXITCODE -ne 0 -or -not $remote -or -not $remote.StartsWith($local)) { throw 'Remote commit verification failed' }; Write-Output ('Verified GitHub main commit: ' + $local)",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

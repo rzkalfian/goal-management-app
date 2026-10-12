@@ -9,6 +9,10 @@
 .button:active { filter: brightness(.94); }
 .field { display: grid; gap: 6px; min-width: 0; }
 .field label { font-size: .875rem; font-weight: 500; }
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 48px; }
+.password-toggle { position: absolute; right: 0; top: 0; width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 0; color: var(--muted); cursor: pointer; border-radius: 8px; }
+.password-toggle:hover { color: var(--foreground); }
 input, select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--surface); color: var(--foreground); padding: 10px 12px; }
 input::placeholder { color: var(--muted); opacity: 1; }
 input[type="file"] { padding: 8px; font-size: .875rem; }
