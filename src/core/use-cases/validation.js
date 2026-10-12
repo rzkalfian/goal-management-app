@@ -1,3 +1,4 @@
+import dynamicIconImports from "lucide-react/dynamicIconImports.mjs";
 import { ROLES, STATUSES } from "../entities/product.js";
 
 export class ValidationError extends Error {}
@@ -29,6 +30,12 @@ export function productInput(input) {
     categoryId: text(input.categoryId, "Kategori", 80),
     buyUrl: webUrl(input.buyUrl), affiliateUrl: webUrl(input.affiliateUrl, true),
   };
+}
+
+export function categoryInput(input) {
+  const icon = typeof input.icon === "string" && input.icon ? input.icon : null;
+  if (icon && !Object.hasOwn(dynamicIconImports, icon)) throw new ValidationError("Ikon tidak tersedia di Lucide.");
+  return { name: text(input.name, "Nama kategori", 60), icon };
 }
 
 export function userInput(input, requirePassword = true) {

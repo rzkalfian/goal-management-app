@@ -38,3 +38,12 @@ test("product persistence and category deletion retain referential integrity", (
   productRepo.deleteProduct(product.id);
   assert.equal(productRepo.listProducts().length, 0);
 });
+
+test("category icon is stored and returned with products", () => {
+  const category = categoryRepo.saveCategory({ name: "Icon test", icon: "book-open" });
+  assert.equal(categoryRepo.listCategories().find((item) => item.id === category.id).icon, "book-open");
+  const product = productRepo.saveProduct({ title: "Icon", status: "WISHLIST", categoryId: category.id, buyUrl: "https://example.com" });
+  assert.equal(productRepo.listProducts()[0].categoryIcon, "book-open");
+  productRepo.deleteProduct(product.id);
+  categoryRepo.deleteCategory(category.id);
+});

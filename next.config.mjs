@@ -4,7 +4,6 @@ const nextConfig = {
   turbopack: { root: process.cwd() },
   outputFileTracingIncludes: { "/*": ["./src/data/db/migration.sql"] },
   serverExternalPackages: ["better-sqlite3"],
-  experimental: { serverActions: { bodySizeLimit: "6mb" } },
   async headers() {
     return [{ source: "/:path*", headers: [
       { key: "X-Frame-Options", value: "DENY" },

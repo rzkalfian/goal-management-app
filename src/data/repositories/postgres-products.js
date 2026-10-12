@@ -5,9 +5,9 @@ import { products, categories } from "../db/postgres-schema.js";
 import { ValidationError } from "../../core/use-cases/validation.js";
 
 export async function listProducts() {
-  const rows = await pg.select({ product: products, category: categories.name }).from(products)
+  const rows = await pg.select({ product: products, category: categories.name, categoryIcon: categories.icon }).from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id)).orderBy(desc(products.createdAt));
-  return rows.map(({ product, category }) => ({ ...product, category }));
+  return rows.map(({ product, category, categoryIcon }) => ({ ...product, category, categoryIcon }));
 }
 export async function findProduct(id) {
   return (await pg.select().from(products).where(eq(products.id, id)))[0];

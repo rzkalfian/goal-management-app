@@ -7,12 +7,12 @@ export const users = sqliteTable("users", {
   createdAt: text("created_at").notNull(),
 });
 export const categories = sqliteTable("categories", {
-  id: text("id").primaryKey(), name: text("name").notNull().unique(),
+  id: text("id").primaryKey(), name: text("name").notNull().unique(), icon: text("icon"),
 });
 export const products = sqliteTable("products", {
   id: text("id").primaryKey(), title: text("title").notNull(),
   status: text("status").notNull(), buyUrl: text("buy_url").notNull(),
-  affiliateUrl: text("affiliate_url"), imageUrl: text("image_url"),
+  affiliateUrl: text("affiliate_url"),
   categoryId: text("category_id").notNull().references(() => categories.id),
   createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(),
 });

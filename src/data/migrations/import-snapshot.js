@@ -1,7 +1,7 @@
 import { count, eq } from "drizzle-orm";
 import { users, categories, products, settings } from "../db/postgres-schema.js";
 import { ROLES } from "../../core/entities/product.js";
-import { productInput, webUrl, text, ValidationError } from "../../core/use-cases/validation.js";
+import { productInput, text, ValidationError } from "../../core/use-cases/validation.js";
 
 export function validateSnapshot(snapshot) {
   for (const key of ["users", "categories", "products"]) {
@@ -19,10 +19,6 @@ export function validateSnapshot(snapshot) {
   for (const category of snapshot.categories) { text(category.id, "ID"); text(category.name, "Kategori", 60); }
   for (const product of snapshot.products) {
     productInput(product); text(product.id, "ID");
-    if (product.imageUrl) {
-      if (!product.imageUrl.startsWith("https://")) throw new ValidationError("Pindahkan gambar lokal ke Cloudinary sebelum impor.");
-      webUrl(product.imageUrl);
-    }
   }
   return snapshot;
 }
@@ -35,13 +31,13 @@ export async function importSnapshot(db, snapshot) {
         throw new ValidationError("Database tujuan harus kosong. Tidak ada data yang ditimpa.");
       }
     }
-    for (const category of snapshot.categories) await tx.insert(categories).values({ id: category.id, name: category.name });
+    for (const category of snapshot.categories) await tx.insert(categories).values({ id: category.id, name: category.name, icon: category.icon || null });
     for (const user of snapshot.users) await tx.insert(users).values({
       id: user.id, email: user.email, password: user.password, role: user.role,
       createdAt: user.createdAt, sessionVersion: (user.sessionVersion || 0) + 1,
     });
     for (const product of snapshot.products) await tx.insert(products).values({
-      ...productInput(product), id: product.id, imageUrl: product.imageUrl || null,
+      ...productInput(product), id: product.id,
       createdAt: product.createdAt, updatedAt: product.updatedAt,
     });
     return { users: snapshot.users.length, categories: snapshot.categories.length, products: snapshot.products.length };

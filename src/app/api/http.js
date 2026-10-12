@@ -45,15 +45,6 @@ export async function jsonBody(request) {
     throw new ValidationError("Format data tidak valid.");
   }
 }
-export async function productBody(request) {
-  try {
-    const body = await boundedBody(request, 6 * 1024 * 1024);
-    return await new Request(request.url, { method: "POST", headers: request.headers, body }).formData();
-  } catch (error) {
-    if (error instanceof HttpError) throw error;
-    throw new ValidationError("Form produk tidak valid.");
-  }
-}
 export function found(value) {
   if (!value) throw new HttpError("Data tidak ditemukan.", 404);
   return value;

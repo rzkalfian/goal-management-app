@@ -20,9 +20,7 @@ test("setup, real product/category/user CRUD, role boundaries, and responsive th
   await page.getByRole("button", { name: "Tambah barang", exact: true }).first().click();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await addProduct(page, "[TEST] Buku", true);
-  await expect(page.locator(".product-image img")).toBeVisible();
-  await expect.poll(() => page.locator(".product-image img").evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
+  await addProduct(page, "[TEST] Buku");
   const product = page.locator("article").first();
   await expect(product.getByRole("link", { name: "Beli [TEST] Buku" })).toHaveAttribute("href", "https://example.com/product");
   await expect(product.getByRole("link", { name: "Affiliate [TEST] Buku" })).toHaveAttribute("href", "https://example.com/affiliate");

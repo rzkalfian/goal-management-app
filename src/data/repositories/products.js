@@ -7,9 +7,9 @@ const pgRepo = usePostgres ? await import("./postgres-products.js") : null;
 
 export function listProducts() {
   if (pgRepo) return pgRepo.listProducts();
-  return db.select({ product: products, category: categories.name }).from(products)
+  return db.select({ product: products, category: categories.name, categoryIcon: categories.icon }).from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id)).orderBy(desc(products.createdAt)).all()
-    .map(({ product, category }) => ({ ...product, category }));
+    .map(({ product, category, categoryIcon }) => ({ ...product, category, categoryIcon }));
 }
 export function findProduct(id) {
   if (pgRepo) return pgRepo.findProduct(id);

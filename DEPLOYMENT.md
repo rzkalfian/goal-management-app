@@ -1,4 +1,4 @@
-# Vercel + Supabase + Cloudinary
+# Vercel + Supabase
 
 Kode mendukung PostgreSQL melalui DATABASE_URL. SQLite tetap digunakan jika URL kosong.
 Tidak ada migration saat request/build; siapkan schema terlebih dahulu.
@@ -13,7 +13,8 @@ mendukung DDL/migrasi pada konfigurasi Anda. Password yang mengandung karakter
 khusus harus di-URL-encode. Simpan kredensial hanya di .env.local/Vercel Environment Variables.
 
 Adapter memakai `prepare: false` agar kompatibel dengan transaction pooling,
-dan maksimal satu koneksi per instance serverless. Pilih region Vercel dekat Supabase.
+dan maksimal satu koneksi per instance serverless. Region fungsi Vercel diatur di
+vercel.json (`syd1`) agar dekat dengan Supabase ap-southeast-2; ubah jika region Supabase berbeda.
 Koneksi harus memakai role database server yang memiliki BYPASSRLS (misalnya postgres),
 bukan Supabase anon key. Migration mengaktifkan RLS tanpa policy publik pada semua
 tabel aplikasi, sehingga Data API anonim tidak mendapat akses akun atau barang.
@@ -22,8 +23,7 @@ Semua akses pengguna tetap melewati Auth.js dan pemeriksaan role di server.
 ## 2. Siapkan environment lokal
 
 Salin .env.example menjadi .env.local melalui editor, jangan commit file tersebut.
-Isi sendiri DATABASE_URL, AUTH_SECRET minimal 32 karakter, dan tiga credential
-Cloudinary. Buat AUTH_SECRET acak lewat password manager atau generator lokal,
+Isi sendiri DATABASE_URL dan AUTH_SECRET minimal 32 karakter. Buat AUTH_SECRET acak lewat password manager atau generator lokal,
 jangan memakai contoh dokumentasi sebagai secret. Jangan kirim secret ke chat.
 AUTH_URL lokal: http://127.0.0.1:3000 (sesuaikan alamat yang digunakan browser).
 
@@ -37,7 +37,7 @@ Schema versi berikutnya tetap memerlukan migration khusus untuk perubahan kolom.
 
 ## 3. Pindahkan data SQLite yang sudah ada
 
-Cadangkan database dan folder uploads terlebih dahulu, lalu hentikan perubahan
+Cadangkan database terlebih dahulu, lalu hentikan perubahan
 barang/akun selama impor agar snapshot tidak tertinggal dari data lokal.
 Gunakan database PostgreSQL baru yang **kosong**, termasuk tabel kategori.
 Jangan jalankan setup akun pertama pada PostgreSQL sebelum impor.
@@ -46,21 +46,12 @@ Jangan jalankan setup akun pertama pada PostgreSQL sebelum impor.
 npm run db:import-sqlite -- .data/goals.sqlite
 ```
 
-Jika ada gambar lokal, isi credential Cloudinary terlebih dahulu:
-
-```sh
-npm run db:import-sqlite -- .data/goals.sqlite --upload-images
-```
-
 SQLite dibuka read-only. Import PostgreSQL dilakukan dalam satu transaksi,
 menolak tujuan yang tidak kosong, mempertahankan ID/hash password/status/tanggal,
 dan menaikkan session version agar login ulang diperlukan. Secret SQLite tidak disalin.
-Gambar lokal diunggah ke Cloudinary sebelum transaksi; kegagalan impor tidak
-menghapus data sumber, tetapi aset yang sudah diunggah mungkin perlu dibersihkan manual.
-URL delivery Cloudinary publik: jangan pindahkan foto sensitif ke penyimpanan publik.
 
 Setelah impor, jalankan lokal dengan DATABASE_URL dan login memakai akun lama.
-Pastikan jumlah barang/kategori/pengguna dan gambar cocok sebelum membuka deploy.
+Pastikan jumlah barang/kategori/pengguna cocok sebelum membuka deploy.
 
 ## 4. Repository GitHub rzkalfian
 
@@ -94,9 +85,6 @@ Environment production:
 | DATABASE_URL | Transaction pooler PostgreSQL dengan SSL |
 | AUTH_SECRET | Secret acak yang sama pada instance production |
 | AUTH_URL | URL HTTPS deploy/custom domain yang benar |
-| CLOUDINARY_CLOUD_NAME | Nama cloud |
-| CLOUDINARY_API_KEY | API key, server-only |
-| CLOUDINARY_API_SECRET | API secret, server-only |
 | ALLOW_INITIAL_SETUP | false |
 
 Jangan gunakan prefix NEXT_PUBLIC_ untuk secret. Vercel mengisi VERCEL otomatis.
@@ -114,6 +102,6 @@ redeploy sebelum membuka akses publik. Impor akun lama tidak memerlukan setup.
 Jalankan npm test, npm run lint, npm run build dan npm run test:e2e sebelum push.
 Tes PostgreSQL memakai PGlite terisolasi; browser tes tetap SQLite temporer.
 Supabase/network production memerlukan smoke test tersendiri setelah konfigurasi.
-Periksa login/logout, CRUD, akses Admin, upload, backup JSON, instal PWA dan HTTPS.
+Periksa login/logout, CRUD, akses Admin, backup JSON, instal PWA dan HTTPS.
 Backup PostgreSQL JSON memuat hash password; untuk disaster recovery gunakan
 backup Supabase/pg_dump juga. Tidak ada endpoint restore destruktif.

@@ -32,13 +32,12 @@ Daftar barang bersama untuk seluruh akun, sesuai skema tanpa kepemilikan per use
 
 ## Penyimpanan dan deployment
 
-Untuk **Vercel + Supabase PostgreSQL + Cloudinary**, ikuti [DEPLOYMENT.md](DEPLOYMENT.md).
+Untuk **Vercel + Supabase PostgreSQL**, ikuti [DEPLOYMENT.md](DEPLOYMENT.md).
 `DATABASE_URL` memilih PostgreSQL; jika kosong, lokal tetap memakai SQLite.
 Vercel menolak startup tanpa PostgreSQL; migrasi schema dijalankan terpisah sebelum deploy.
 
-SQLite disimpan di `.data/goals.sqlite`, gambar development di `.data/uploads`.
-Gambar lokal dilayani melalui endpoint privat setelah login. JPEG/PNG/WebP maksimal
-5 MB dan 20 megapiksel, dinormalisasi ke WebP maksimal 1200 piksel.
+SQLite disimpan di `.data/goals.sqlite`. Aplikasi tidak menyimpan gambar produk;
+kategori memakai ikon Lucide yang dipilih di form kategori.
 
 Untuk production, salin `.env.example` ke `.env.local` dan isi sendiri:
 
@@ -47,12 +46,8 @@ Untuk production, salin `.env.example` ke `.env.local` dan isi sendiri:
 - `DATABASE_PATH`: lokasi SQLite pada disk persisten.
 - `DATABASE_URL`: URL PostgreSQL untuk Supabase/Vercel; AUTH_SECRET minimal 32 karakter wajib.
 - `ALLOW_INITIAL_SETUP`: `false` secara default di production; buka sementara hanya untuk setup privat.
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: kredensial Cloudinary.
 
 Jangan commit secret atau folder `.data`. Jangan masukkan kredensial ke chat.
-Cloudinary wajib untuk unggahan baru di production. Gambar Cloudinary memakai URL
-delivery publik: jangan unggah gambar sensitif. Unggahan lama tidak dihapus otomatis,
-agar referensi/cadangan lama tidak kehilangan file. Bersihkan aset yatim secara manual.
 Untuk SQLite, gunakan satu instance Node.js dengan volume persisten, bukan filesystem serverless sementara.
 Tambahkan rate limiting di reverse proxy untuk deployment publik, khususnya per-IP.
 
@@ -63,7 +58,7 @@ npm start
 
 Developer dapat mengunduh snapshot SQLite atau ekspor JSON PostgreSQL di halaman Sistem.
 Backup memuat hash password (dan secret lokal untuk SQLite), simpan secara privat.
-Cadangkan gambar terpisah. Untuk SQLite, restore dilakukan saat server berhenti dengan mengganti SQLite dan menghapus file
+Untuk SQLite, restore dilakukan saat server berhenti dengan mengganti SQLite dan menghapus file
 WAL/SHM lama setelah memastikan cadangan aman. Tidak ada endpoint restore destruktif.
 
 ## PWA dan Mobile

@@ -1,5 +1,5 @@
-import { api } from "../http";
+import { api, jsonBody } from "../http";
 import { listProducts, saveProduct } from "@/data/repositories/products";
-import { readProduct } from "./input";
+import { productInput } from "@/core/use-cases/validation";
 export const GET = api(() => listProducts());
-export const POST = api(async (request) => saveProduct(await readProduct(request)));
+export const POST = api(async (request) => saveProduct(productInput(await jsonBody(request))));

@@ -1,6 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import { DisketteIcon } from "@solar-icons/react/linear";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,27 +7,14 @@ import { Field } from "@/components/ui/field";
 import { ErrorMessage } from "@/components/ui/feedback";
 import { STATUSES } from "@/core/entities/product";
 import { request } from "@/components/hooks/request";
-import { compressImage } from "./compress-image";
 
-const MAX_UPLOAD = 4 * 1024 * 1024;
 export function ProductForm({ item, categories, onClose, onSaved }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [preview, setPreview] = useState(item?.imageUrl || "");
-  useEffect(() => () => { if (preview.startsWith("blob:")) URL.revokeObjectURL(preview); }, [preview]);
-  function chooseImage(event) {
-    const file = event.target.files?.[0];
-    if (file?.size > 20 * 1024 * 1024) { event.target.value = ""; setError("Gambar maksimal 20 MB."); return; }
-    setError(""); setPreview(file ? URL.createObjectURL(file) : item?.imageUrl || "");
-  }
   async function submit(event) {
     event.preventDefault(); setError(""); setBusy(true);
     try {
-      const body = new FormData(event.currentTarget);
-      const image = await compressImage(body.get("image"));
-      if (image?.size > MAX_UPLOAD) throw new Error("Gambar masih terlalu besar setelah dikompres. Pilih gambar lain.");
-      if (image?.size) body.set("image", image);
-      await request(item ? `/api/products/${item.id}` : "/api/products", { method: item ? "PUT" : "POST", body });
+      await request(item ? `/api/products/${item.id}` : "/api/products", { method: item ? "PUT" : "POST", body: Object.fromEntries(new FormData(event.currentTarget)) });
       onSaved(); onClose();
     } catch (failure) { setError(failure.message); }
     finally { setBusy(false); }
@@ -42,9 +28,6 @@ export function ProductForm({ item, categories, onClose, onSaved }) {
       </div>
       <Field name="buyUrl" label="Link pembelian" type="url" required maxLength={2048} defaultValue={item?.buyUrl || ""} placeholder="https://" />
       <Field name="affiliateUrl" label="Link affiliate (opsional)" type="url" maxLength={2048} defaultValue={item?.affiliateUrl || ""} placeholder="https://" />
-      <Field name="image" label="Gambar produk (opsional)" type="file" accept="image/jpeg,image/png,image/webp" onChange={chooseImage} hint="JPEG, PNG, atau WebP. Dikompres otomatis sebelum diunggah." />
-      {preview && <Image className="image-preview" src={preview} alt="Preview gambar produk" width={400} height={180} unoptimized />}
-      {item?.imageUrl && <label className="checkbox-field"><input type="checkbox" name="removeImage" value="true" />Hapus gambar lama</label>}
       <ErrorMessage message={error} />
       <div className="form-actions"><Button variant="outline" onClick={onClose} disabled={busy}>Batal</Button><Button type="submit" disabled={busy || !categories.length}><DisketteIcon size={18} />{busy ? "Menyimpan..." : "Simpan barang"}</Button></div>
     </form>

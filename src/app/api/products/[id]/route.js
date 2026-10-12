@@ -1,8 +1,8 @@
-import { api, found } from "../../http";
+import { api, found, jsonBody } from "../../http";
 import { findProduct, saveProduct, deleteProduct } from "@/data/repositories/products";
-import { readProduct } from "../input";
+import { productInput } from "@/core/use-cases/validation";
 export const PUT = api(async (request, { params }) => {
-  const current = found(await findProduct(params.id));
-  return saveProduct(await readProduct(request, current), params.id);
+  found(await findProduct(params.id));
+  return saveProduct(productInput(await jsonBody(request)), params.id);
 });
 export const DELETE = api(async (request, { params }) => found(await deleteProduct(params.id)));

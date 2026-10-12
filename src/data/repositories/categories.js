@@ -7,16 +7,16 @@ const pgRepo = usePostgres ? await import("./postgres-categories.js") : null;
 
 export function listCategories() {
   if (pgRepo) return pgRepo.listCategories();
-  return db.select({ id: categories.id, name: categories.name, productCount: count(products.id) })
+  return db.select({ id: categories.id, name: categories.name, icon: categories.icon, productCount: count(products.id) })
     .from(categories).leftJoin(products, eq(products.categoryId, categories.id))
     .groupBy(categories.id).orderBy(asc(categories.name)).all();
 }
-export function saveCategory(name, id) {
-  if (pgRepo) return pgRepo.saveCategory(name, id);
-  const duplicate = db.select().from(categories).where(eq(categories.name, name)).get();
+export function saveCategory(input, id) {
+  if (pgRepo) return pgRepo.saveCategory(input, id);
+  const duplicate = db.select().from(categories).where(eq(categories.name, input.name)).get();
   if (duplicate && duplicate.id !== id) throw new ValidationError("Nama kategori sudah digunakan.");
-  if (id) return db.update(categories).set({ name }).where(eq(categories.id, id)).returning().get();
-  return db.insert(categories).values({ id: randomUUID(), name }).returning().get();
+  if (id) return db.update(categories).set(input).where(eq(categories.id, id)).returning().get();
+  return db.insert(categories).values({ ...input, id: randomUUID() }).returning().get();
 }
 export function deleteCategory(id) {
   if (pgRepo) return pgRepo.deleteCategory(id);

@@ -22,6 +22,7 @@ if (!usePostgres) {
   sqlite.pragma("foreign_keys = ON");
   sqlite.pragma("busy_timeout = 5000");
   sqlite.exec(readFileSync(join(process.cwd(), "src/data/db/migration.sql"), "utf8"));
+  if (!sqlite.pragma("table_info(categories)").some((column) => column.name === "icon")) sqlite.exec("ALTER TABLE categories ADD COLUMN icon TEXT");
   sqlite.transaction(() => {
     if (!sqlite.prepare("SELECT 1 FROM settings WHERE key = 'initialized'").get()) {
       const insert = sqlite.prepare("INSERT OR IGNORE INTO categories (id, name) VALUES (?, ?)");

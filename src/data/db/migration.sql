@@ -3,11 +3,11 @@ CREATE TABLE IF NOT EXISTS users (
   role TEXT NOT NULL CHECK(role IN ('ADMIN', 'DEVELOPER')),
   session_version INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS categories (id TEXT PRIMARY KEY, name TEXT NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS categories (id TEXT PRIMARY KEY, name TEXT NOT NULL UNIQUE, icon TEXT);
 CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY, title TEXT NOT NULL,
   status TEXT NOT NULL CHECK(status IN ('WISHLIST', 'SUDAH_DIBELI', 'SERING_DIBELI')),
-  buy_url TEXT NOT NULL, affiliate_url TEXT, image_url TEXT,
+  buy_url TEXT NOT NULL, affiliate_url TEXT,
   category_id TEXT NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
   created_at TEXT NOT NULL, updated_at TEXT NOT NULL
 );

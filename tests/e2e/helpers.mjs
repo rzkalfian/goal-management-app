@@ -1,5 +1,4 @@
 import { expect } from "@playwright/test";
-import sharp from "sharp";
 export const developer = { email: "developer@example.test", password: "test-only-password-123" };
 export const admin = { email: "admin@example.test", password: "test-only-admin-pass-123" };
 export const origin = { Origin: "http://localhost:3101" };
@@ -12,15 +11,11 @@ export async function login(page, account = developer) {
   await expect(page).toHaveURL(/\/products$/);
   await expect(page.getByRole("button", { name: "Tambah barang", exact: true }).first()).toBeEnabled();
 }
-export async function addProduct(page, title, image = false) {
+export async function addProduct(page, title) {
   await page.getByRole("button", { name: "Tambah barang", exact: true }).first().click();
   await page.getByLabel("Nama produk", { exact: true }).fill(title);
   await page.getByLabel("Link pembelian", { exact: true }).fill("https://example.com/product");
   await page.getByLabel("Link affiliate (opsional)").fill("https://example.com/affiliate");
-  if (image) await page.getByLabel("Gambar produk (opsional)").setInputFiles({
-    name: "test.png", mimeType: "image/png",
-    buffer: await sharp({ create: { width: 300, height: 300, channels: 3, background: "#3f75ff" } }).png().toBuffer(),
-  });
   await page.getByRole("button", { name: "Simpan barang", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
