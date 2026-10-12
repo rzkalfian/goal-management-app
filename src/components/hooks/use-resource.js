@@ -11,14 +11,23 @@ export function useResource(path) {
   const [version, setVersion] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    request(path, { signal: controller.signal }).then((result) => {
-      setData(result); setError("");
-    }).catch((failure) => {
-      if (failure.status === 401) router.replace("/login");
-      if (!controller.signal.aborted) setError(failure.message);
-    }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    request(path, { signal: controller.signal })
+      .then((result) => {
+        setData(result);
+        setError("");
+      })
+      .catch((failure) => {
+        if (failure.status === 401) router.replace("/login");
+        if (!controller.signal.aborted) setError(failure.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
     return () => controller.abort();
   }, [path, version, router]);
-  function refresh() { setLoading(true); setVersion((value) => value + 1); }
+  function refresh() {
+    setLoading(true);
+    setVersion((value) => value + 1);
+  }
   return { data, loading, error, refresh };
 }

@@ -7,21 +7,47 @@ const pgRepo = usePostgres ? await import("./postgres-categories.js") : null;
 
 export function listCategories() {
   if (pgRepo) return pgRepo.listCategories();
-  return db.select({ id: categories.id, name: categories.name, icon: categories.icon, productCount: count(products.id) })
-    .from(categories).leftJoin(products, eq(products.categoryId, categories.id))
-    .groupBy(categories.id).orderBy(asc(categories.name)).all();
+  return db
+    .select({
+      id: categories.id,
+      name: categories.name,
+      icon: categories.icon,
+      productCount: count(products.id),
+    })
+    .from(categories)
+    .leftJoin(products, eq(products.categoryId, categories.id))
+    .groupBy(categories.id)
+    .orderBy(asc(categories.name))
+    .all();
 }
 export function saveCategory(input, id) {
   if (pgRepo) return pgRepo.saveCategory(input, id);
-  const duplicate = db.select().from(categories).where(eq(categories.name, input.name)).get();
-  if (duplicate && duplicate.id !== id) throw new ValidationError("Nama kategori sudah digunakan.");
-  if (id) return db.update(categories).set(input).where(eq(categories.id, id)).returning().get();
-  return db.insert(categories).values({ ...input, id: randomUUID() }).returning().get();
+  const duplicate = db
+    .select()
+    .from(categories)
+    .where(eq(categories.name, input.name))
+    .get();
+  if (duplicate && duplicate.id !== id)
+    throw new ValidationError("Nama kategori sudah digunakan.");
+  if (id)
+    return db
+      .update(categories)
+      .set(input)
+      .where(eq(categories.id, id))
+      .returning()
+      .get();
+  return db
+    .insert(categories)
+    .values({ ...input, id: randomUUID() })
+    .returning()
+    .get();
 }
 export function deleteCategory(id) {
   if (pgRepo) return pgRepo.deleteCategory(id);
   if (db.select().from(products).where(eq(products.categoryId, id)).get()) {
-    throw new ValidationError("Kategori masih digunakan produk. Pindahkan produknya terlebih dahulu.");
+    throw new ValidationError(
+      "Kategori masih digunakan produk. Pindahkan produknya terlebih dahulu.",
+    );
   }
   return db.delete(categories).where(eq(categories.id, id)).returning().get();
 }

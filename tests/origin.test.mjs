@@ -10,8 +10,20 @@ test("incoming host controls local same-origin checks when Next normalizes the U
   assert.equal(isSameOrigin(request, "http://localhost:3000"), false);
 });
 test("missing, null and foreign origins remain blocked", () => {
-  for (const origin of ["", "null", "http://evil.example", "http://localhost:3001"]) {
-    assert.equal(isSameOrigin(new Request("http://localhost:3000/api/setup", { headers: { host: "localhost:3000", origin } })), false);
+  for (const origin of [
+    "",
+    "null",
+    "http://evil.example",
+    "http://localhost:3001",
+  ]) {
+    assert.equal(
+      isSameOrigin(
+        new Request("http://localhost:3000/api/setup", {
+          headers: { host: "localhost:3000", origin },
+        }),
+      ),
+      false,
+    );
   }
 });
 test("configured public HTTPS origin takes precedence over internal host", () => {

@@ -7,9 +7,21 @@ const pgRepo = usePostgres ? await import("./postgres-products.js") : null;
 
 export function listProducts() {
   if (pgRepo) return pgRepo.listProducts();
-  return db.select({ product: products, category: categories.name, categoryIcon: categories.icon }).from(products)
-    .innerJoin(categories, eq(products.categoryId, categories.id)).orderBy(desc(products.createdAt)).all()
-    .map(({ product, category, categoryIcon }) => ({ ...product, category, categoryIcon }));
+  return db
+    .select({
+      product: products,
+      category: categories.name,
+      categoryIcon: categories.icon,
+    })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .orderBy(desc(products.createdAt))
+    .all()
+    .map(({ product, category, categoryIcon }) => ({
+      ...product,
+      category,
+      categoryIcon,
+    }));
 }
 export function findProduct(id) {
   if (pgRepo) return pgRepo.findProduct(id);
@@ -17,12 +29,28 @@ export function findProduct(id) {
 }
 export function saveProduct(input, id) {
   if (pgRepo) return pgRepo.saveProduct(input, id);
-  if (!db.select().from(categories).where(eq(categories.id, input.categoryId)).get()) {
+  if (
+    !db
+      .select()
+      .from(categories)
+      .where(eq(categories.id, input.categoryId))
+      .get()
+  ) {
     throw new ValidationError("Kategori tidak ditemukan.");
   }
   const now = new Date().toISOString();
-  if (id) return db.update(products).set({ ...input, updatedAt: now }).where(eq(products.id, id)).returning().get();
-  return db.insert(products).values({ ...input, id: randomUUID(), createdAt: now, updatedAt: now }).returning().get();
+  if (id)
+    return db
+      .update(products)
+      .set({ ...input, updatedAt: now })
+      .where(eq(products.id, id))
+      .returning()
+      .get();
+  return db
+    .insert(products)
+    .values({ ...input, id: randomUUID(), createdAt: now, updatedAt: now })
+    .returning()
+    .get();
 }
 export function deleteProduct(id) {
   if (pgRepo) return pgRepo.deleteProduct(id);

@@ -4,4 +4,9 @@ export const STATUSES = {
   SERING_DIBELI: "Sering Dibeli",
 };
 export const ROLES = ["ADMIN", "DEVELOPER"];
-export const DEFAULT_CATEGORIES = ["Buku", "Camilan", "Gaya Hidup", "Seserahan"];
+export const DEFAULT_CATEGORIES = [
+  "Buku",
+  "Camilan",
+  "Gaya Hidup",
+  "Seserahan",
+];

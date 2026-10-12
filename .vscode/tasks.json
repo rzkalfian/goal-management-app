@@ -56,6 +56,20 @@
 			"command": "$env:GIT_TERMINAL_PROMPT='0'; $env:GCM_INTERACTIVE='never'; $local = git rev-parse HEAD; $remote = git -c credential.interactive=false ls-remote --heads origin main; if ($LASTEXITCODE -ne 0 -or -not $remote -or -not $remote.StartsWith($local)) { throw 'Remote commit verification failed' }; Write-Output ('Verified GitHub main commit: ' + $local)",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Verify compact mobile product cards",
+			"type": "shell",
+			"command": "node node_modules/@playwright/test/cli.js test --grep compact --reporter=line",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Format and check compact card files",
+			"type": "shell",
+			"command": "node node_modules/prettier/bin/prettier.cjs --write src/components/products/product-card.jsx src/components/products/product-manager.jsx src/styles/catalog.css tests/e2e/workflow.spec.mjs; if ($LASTEXITCODE -ne 0) { throw 'Formatting failed' }; node node_modules/prettier/bin/prettier.cjs --check src/components/products/product-card.jsx src/components/products/product-manager.jsx src/styles/catalog.css tests/e2e/workflow.spec.mjs; if ($LASTEXITCODE -ne 0) { throw 'Format check failed' }; node node_modules/eslint/bin/eslint.js src/components/products/product-card.jsx src/components/products/product-manager.jsx tests/e2e/workflow.spec.mjs; if ($LASTEXITCODE -ne 0) { throw 'Lint failed' }",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

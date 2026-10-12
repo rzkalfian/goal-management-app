@@ -8,7 +8,9 @@ export async function hashPassword(password) {
   return `${salt}:${key.toString("hex")}`;
 }
 export async function verifyPassword(password, stored) {
-  const [salt, hash] = (stored || `${"0".repeat(32)}:${"0".repeat(128)}`).split(":");
+  const [salt, hash] = (stored || `${"0".repeat(32)}:${"0".repeat(128)}`).split(
+    ":",
+  );
   const key = await scrypt(password, salt, 64);
   const expected = Buffer.from(hash, "hex");
   return key.length === expected.length && timingSafeEqual(key, expected);

@@ -6,22 +6,39 @@ export function api(handler, { developer = false, publicAccess = false } = {}) {
   return async (request, context) => {
     try {
       if (!["GET", "HEAD"].includes(request.method)) {
-        if (!isSameOrigin(request, process.env.AUTH_URL)) throw new HttpError("Asal permintaan tidak diizinkan.", 403);
+        if (!isSameOrigin(request, process.env.AUTH_URL))
+          throw new HttpError("Asal permintaan tidak diizinkan.", 403);
       }
       const user = publicAccess ? null : await requireUser(developer);
       const params = context?.params ? await context.params : {};
       const result = await handler(request, { user, params });
-      return result instanceof Response ? result : Response.json(result, { headers: { "Cache-Control": "no-store" } });
+      return result instanceof Response
+        ? result
+        : Response.json(result, { headers: { "Cache-Control": "no-store" } });
     } catch (error) {
-      const status = error instanceof ValidationError ? 400 : error.status || 500;
-      if (status === 500) console.error("API request failed:", error.cause?.code || error.code || error.name);
-      return Response.json({ error: status === 500 ? "Permintaan gagal. Silakan coba lagi." : error.message }, { status });
+      const status =
+        error instanceof ValidationError ? 400 : error.status || 500;
+      if (status === 500)
+        console.error(
+          "API request failed:",
+          error.cause?.code || error.code || error.name,
+        );
+      return Response.json(
+        {
+          error:
+            status === 500
+              ? "Permintaan gagal. Silakan coba lagi."
+              : error.message,
+        },
+        { status },
+      );
     }
   };
 }
 
 async function boundedBody(request, limit) {
-  if (Number(request.headers.get("content-length")) > limit) throw new HttpError("Ukuran unggahan terlalu besar.", 413);
+  if (Number(request.headers.get("content-length")) > limit)
+    throw new HttpError("Ukuran unggahan terlalu besar.", 413);
   const reader = request.body?.getReader();
   if (!reader) throw new ValidationError("Data permintaan kosong.");
   const chunks = [];
@@ -30,7 +47,10 @@ async function boundedBody(request, limit) {
     const { done, value } = await reader.read();
     if (done) break;
     size += value.length;
-    if (size > limit) { await reader.cancel(); throw new HttpError("Ukuran unggahan terlalu besar.", 413); }
+    if (size > limit) {
+      await reader.cancel();
+      throw new HttpError("Ukuran unggahan terlalu besar.", 413);
+    }
     chunks.push(value);
   }
   return Buffer.concat(chunks);
@@ -38,10 +58,12 @@ async function boundedBody(request, limit) {
 export async function jsonBody(request) {
   try {
     const result = JSON.parse((await boundedBody(request, 8192)).toString());
-    if (!result || typeof result !== "object" || Array.isArray(result)) throw new Error();
+    if (!result || typeof result !== "object" || Array.isArray(result))
+      throw new Error();
     return result;
   } catch (error) {
-    if (error instanceof HttpError || error instanceof ValidationError) throw error;
+    if (error instanceof HttpError || error instanceof ValidationError)
+      throw error;
     throw new ValidationError("Format data tidak valid.");
   }
 }

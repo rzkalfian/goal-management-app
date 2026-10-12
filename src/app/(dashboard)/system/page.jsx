@@ -12,14 +12,39 @@ export default async function System() {
   const user = await currentUser();
   if (!user) redirect("/login");
   if (user.role !== "DEVELOPER") redirect("/products");
-  const [products, categories, users] = await Promise.all([listProducts(), listCategories(), listUsers()]);
-  return <>
-    <PageHeading title="Sistem" subtitle="Penyimpanan dan cadangan data aplikasi." />
-    <dl className="system-details">
-      <div><dt>Database</dt><dd>{usePostgres ? "PostgreSQL / Drizzle" : "SQLite / Drizzle"}</dd></div>
-      <div><dt>Isi database</dt><dd>{products.length} barang, {categories.length} kategori, {users.length} pengguna</dd></div>
-    </dl>
-    <Button asChild variant="outline"><a href="/api/backup" download><DownloadIcon size={18} />Unduh cadangan database</a></Button>
-    <p className="backup-note">Cadangan berisi data akun dan hash password. Simpan secara privat.</p>
-  </>;
+  const [products, categories, users] = await Promise.all([
+    listProducts(),
+    listCategories(),
+    listUsers(),
+  ]);
+  return (
+    <>
+      <PageHeading
+        title="Sistem"
+        subtitle="Penyimpanan dan cadangan data aplikasi."
+      />
+      <dl className="system-details">
+        <div>
+          <dt>Database</dt>
+          <dd>{usePostgres ? "PostgreSQL / Drizzle" : "SQLite / Drizzle"}</dd>
+        </div>
+        <div>
+          <dt>Isi database</dt>
+          <dd>
+            {products.length} barang, {categories.length} kategori,{" "}
+            {users.length} pengguna
+          </dd>
+        </div>
+      </dl>
+      <Button asChild variant="outline">
+        <a href="/api/backup" download>
+          <DownloadIcon size={18} />
+          Unduh cadangan database
+        </a>
+      </Button>
+      <p className="backup-note">
+        Cadangan berisi data akun dan hash password. Simpan secara privat.
+      </p>
+    </>
+  );
 }
