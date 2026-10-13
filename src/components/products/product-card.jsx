@@ -30,6 +30,9 @@ export function ProductCard({ product, onEdit, onDelete }) {
           />
           <span className="product-image-category">{product.category}</span>
         </div>
+        {product.affiliateUrl && (
+          <span className="badge affiliate-badge">Affiliate</span>
+        )}
       </div>
       <div className="product-info">
         <h2>{product.title}</h2>
