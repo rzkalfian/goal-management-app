@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }) {
         <span className="account-label">
           {user.email}{" "}
           <span className="badge">
-            {user.role === "DEVELOPER" ? "Developer" : "Admin"}
+            {{ DEVELOPER: "Developer", DEMO: "Demo" }[user.role] ?? "Admin"}
           </span>
         </span>
       </footer>

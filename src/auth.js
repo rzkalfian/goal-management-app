@@ -4,6 +4,7 @@ import { authSecret } from "./data/db/connection.js";
 import { findUserByEmail } from "./data/repositories/users.js";
 import { verifyPassword } from "./data/auth/password.js";
 import { allowLogin, clearAttempts } from "./data/auth/attempts.js";
+import { isDemoLogin, demoUser } from "./data/demo/demo.js";
 
 export const { handlers, auth } = NextAuth({
   secret: authSecret,
@@ -23,6 +24,7 @@ export const { handlers, auth } = NextAuth({
         )
           return null;
         const email = credentials.email.trim().toLowerCase();
+        if (isDemoLogin(email, credentials.password)) return demoUser;
         if (!(await allowLogin(email))) return null;
         const user = await findUserByEmail(email);
         const valid = await verifyPassword(

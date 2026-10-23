@@ -81,7 +81,8 @@ export function UserManager({ currentUser }) {
                   </td>
                   <td>
                     <span className="badge">
-                      {item.role === "DEVELOPER" ? "Developer" : "Admin"}
+                      {{ DEVELOPER: "Developer", DEMO: "Demo" }[item.role] ??
+                        "Admin"}
                     </span>
                   </td>
                   <td>

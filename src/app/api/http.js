@@ -1,6 +1,7 @@
 import { requireUser, HttpError } from "@/data/auth/access";
 import { ValidationError } from "@/core/use-cases/validation";
 import { isSameOrigin } from "@/core/use-cases/origin";
+import { demoList } from "@/data/demo/demo";
 
 export function api(handler, { developer = false, publicAccess = false } = {}) {
   return async (request, context) => {
@@ -10,6 +11,18 @@ export function api(handler, { developer = false, publicAccess = false } = {}) {
           throw new HttpError("Asal permintaan tidak diizinkan.", 403);
       }
       const user = publicAccess ? null : await requireUser(developer);
+      if (user?.role === "DEMO") {
+        const list =
+          request.method === "GET" && demoList(new URL(request.url).pathname);
+        if (!list)
+          throw new HttpError(
+            "Akun demo hanya dapat melihat data contoh.",
+            403,
+          );
+        return Response.json(list, {
+          headers: { "Cache-Control": "no-store" },
+        });
+      }
       const params = context?.params ? await context.params : {};
       const result = await handler(request, { user, params });
       return result instanceof Response

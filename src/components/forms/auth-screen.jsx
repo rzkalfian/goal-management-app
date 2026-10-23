@@ -17,6 +17,13 @@ export function AuthScreen({ setup = false }) {
             : "Gunakan akun yang sudah dibuat oleh Developer."}
         </p>
         <AuthForm setup={setup} />
+        {!setup && (
+          <p>
+            Coba demo: <strong>demo@goals.local</strong> /{" "}
+            <strong>demo-goals</strong>. Data contoh bersifat statis dan
+            terpisah dari database.
+          </p>
+        )}
       </section>
       <footer>Wishlist & Stuff Manager</footer>
     </main>

@@ -1,5 +1,6 @@
 import { auth } from "../../auth.js";
 import { findUser } from "../repositories/users.js";
+import { DEMO_ID, demoUser } from "../demo/demo.js";
 
 export class HttpError extends Error {
   constructor(message, status) {
@@ -9,6 +10,7 @@ export class HttpError extends Error {
 }
 export async function currentUser() {
   const session = await auth();
+  if (session?.user?.id === DEMO_ID) return demoUser;
   const user = session?.user?.id ? await findUser(session.user.id) : null;
   if (!user || user.sessionVersion !== session.user.sessionVersion) return null;
   return {
